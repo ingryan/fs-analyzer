@@ -3,15 +3,26 @@ import sys
 
 from collections import OrderedDict
 
+options = {
+            'logfile_location'= 'C:\\proglogs\\output.txt',
+            'top-level-directory'= 'C:\\'
+            'filesize-cutoff'= 10**6
+}
+
+exclusions = {'Windows',
+            'ProgramData',
+            'AppData',
+            'System'
+            }
+
 def scan_fs(excludelist, *args):
-    #topdir=args[0]
-    topdir="C:\\"
+    topdir=options['top-level-directory']
 
     maxsize = 0
     fattestdir = "C:"
 
     results = {}
-    resultscutoff = 10**8
+    resultscutoff = options['filesize-cutoff']
 
     for dirpath, dirnames, filenames in os.walk(topdir,
                                                 topdown=True,
@@ -34,10 +45,13 @@ def scan_fs(excludelist, *args):
 
         if dirsum>resultscutoff:
             dirsum = dirsum // 10**6 #stored as megabytes
-            print("{0} has size {1}MB".format(dirpath, dirsum))
-            results[dirpath]=dirsum
-
-            if dirsum>maxsize:
+            try:
+                print("{0} has size {1}MB".format(dirpath, dirsum))
+            except UnicodeEncodeError:
+                print("Unable to encode characters in filepath; skipping")
+            else:
+                results[dirpath]=dirsum
+                if dirsum>maxsize:
                 maxsize = dirsum #also stored as megabytes
                 fattestdir = dirpath
 
@@ -61,15 +75,6 @@ def print_results(outdict, filename=None):
         for path in sorted_output:
             log.write("{0}: {1}MB \n".format(path, sorted_output[path]))
 
-
-
-
-
-exclusions = {'Windows',
-            'ProgramData',
-            'C:/Users/Default',
-            'AppData'
-            }
-
+if 
 pathdict = scan_fs(exclusions)
-print_results(pathdict, filename='C:/proglogs/out.txt')
+print_results(pathdict, filename=options['logfile_location'])
