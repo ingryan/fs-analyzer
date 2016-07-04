@@ -4,9 +4,9 @@ import sys
 from collections import OrderedDict
 
 options = {
-            'logfile_location'= 'C:\\proglogs\\output.txt',
-            'top-level-directory'= 'C:\\'
-            'filesize-cutoff'= 10**6
+            'logfile_location': 'C:\\proglogs\\output.txt',
+            'top-level-directory': 'C:\\',
+            'filesize-cutoff': 10**8
 }
 
 exclusions = {'Windows',
@@ -52,8 +52,8 @@ def scan_fs(excludelist, *args):
             else:
                 results[dirpath]=dirsum
                 if dirsum>maxsize:
-                maxsize = dirsum #also stored as megabytes
-                fattestdir = dirpath
+                    maxsize = dirsum #also stored as megabytes
+                    fattestdir = dirpath
 
     print("{0} is the winner with size {1}MB".format(fattestdir, maxsize))
     return results
@@ -75,6 +75,5 @@ def print_results(outdict, filename=None):
         for path in sorted_output:
             log.write("{0}: {1}MB \n".format(path, sorted_output[path]))
 
-if 
 pathdict = scan_fs(exclusions)
 print_results(pathdict, filename=options['logfile_location'])
